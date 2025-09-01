@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Yield Predictor</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background: linear-gradient(120deg, #f0fff0, #d4edda);
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 700px;
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            background: #ffffff;
+        }
+        .btn-predict {
+            background: #28a745;
+            color: white;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .btn-predict:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+        .result-box, .recommend-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #c3e6cb;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        h2 {
+            text-align: center;
+            color: #155724;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>🌾 Smart Crop Yield Prediction 🌱</h2>
+
+        <form method="POST">
+            <div class="mb-3">
+                <label>State:</label>
+                <select class="form-control select2" name="State" required>
+                    {% for state in states %}
+                        <option value="{{ state }}">{{ state }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Season:</label>
+                <select class="form-control select2" name="Season" required>
+                    {% for season in seasons %}
+                        <option value="{{ season }}">{{ season }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Removed Crop selection (auto-detected in backend) -->
+
+            <div class="mb-3">
+                <label>Crop Year:</label>
+                <select class="form-control select2" name="Crop_Year" required>
+                    {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Area (in hectares):</label>
+                <input type="number" class="form-control" step="0.01" name="Area" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Production (in tonnes):</label>
+                <input type="number" class="form-control" step="0.01" name="Production" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Annual Rainfall (mm):</label>
+                <input type="number" class="form-control" step="0.01" name="Annual_Rainfall" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Fertilizer (kg/ha):</label>
+                <input type="number" class="form-control" step="0.01" name="Fertilizer" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Pesticide (kg/ha):</label>
+                <input type="number" class="form-control" step="0.01" name="Pesticide" required>
+            </div>
+
+            <button type="submit" class="btn btn-predict">🌿 Predict Yield</button>
+        </form>
+
+        {% if recommended_crop %}
+            <div class="recommend-box mt-3">
+                🌾 <strong>Recommended Crop:</strong> {{ recommended_crop }}
+            </div>
+        {% endif %}
+
+        {% if result is not none %}
+            <div class="result-box">
+                📊 <strong>Predicted Yield:</strong> {{ result }} tons/hectare
+            </div>
+        {% endif %}
+
+        {% if benefits %}
+            <div class="result-box mt-3">
+                🌱 <strong>Why grow this crop?</strong><br>
+                {{ benefits }}
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="alert alert-danger mt-3">
+                ❌ <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+    });
+</script>
+
+</body>
+</html>
